@@ -38,6 +38,8 @@ HEADERS  += mainwindow.h \
     Exception/ErrorInputDataException.h \
     Exception/Exception.h \
     Exception/QueueFullException.h \
-    Exception/QueueEmptyException.h
+    Exception/QueueEmptyException.h \
+    Computer/Computer.h \
+    Operator/Operator.h
 
 FORMS    += mainwindow.ui

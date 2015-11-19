@@ -5,7 +5,7 @@
 
 class ProcessingUnit
 {
-private:
+protected:
     double a;
     double b;
     double previousTime;
@@ -17,6 +17,7 @@ public:
         this->a = a;
         this->b = b;
         previousTime = 0.0;
+        workingTime = 0.0;
     }
     ~ProcessingUnit() {}
 
