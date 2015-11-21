@@ -1,25 +1,31 @@
 #include "LKG.h"
 
-int LKG::GenerateValue(int previousValue, int lowBorder, int highBorder)
+double LKG::GenerateValue(double previousValue, int lowBorder, int highBorder)
 {
-    int generatedNumber = Generator(previousValue);
+    double generatedNumber = (double) Generator(previousValue);
     return TransformValueIntoBorders(generatedNumber, lowBorder, highBorder);
 }
 
-int LKG::GenerateValue(int previousValue)
+double LKG::GenerateValue(double previousValue)
 {
     return Generator(previousValue);
 }
 
-int LKG::Generator(int previousValue)
+double LKG::Generator(double previousValue)
 {
-    return (a * previousValue + b) % m;
+    long long int value = (a * previousValue + b);
+    return value % m;
 }
 
-int LKG::TransformValueIntoBorders(int value, int lowBorder, int highBorder)
+double LKG::TransformValueIntoBorders(double value, int lowBorder, int highBorder)
 {
-    int resultValue = value % (highBorder - lowBorder) + lowBorder;
-    return resultValue;
+    double interval = highBorder - lowBorder;
+    while (value > highBorder)
+        value -= interval;
+    while (value < lowBorder)
+        value += interval;
+
+    return value;
 }
 
 int LKG::a = 106;

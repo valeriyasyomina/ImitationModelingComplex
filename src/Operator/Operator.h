@@ -6,7 +6,7 @@
 class Operator : public ProcessingUnit
 {
 public:
-    Operator(): ProcessingUnit() {}
+    Operator(): ProcessingUnit(){}
     Operator(double a, double b) : ProcessingUnit(a, b) {}
     ~Operator() {}
 };

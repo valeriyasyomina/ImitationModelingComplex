@@ -1,12 +1,8 @@
 #include "StatisticsBlock.h"
 
-void StatisticsBlock::CollectStatistics(int currentRequestsNumberInMemory, int dropRequestNumber, double currentModelingTime,
-                                        double procUnitWorkingTime)
+void StatisticsBlock::CollectStatistics(int requestProcessedNumber, int requestDropNumber)
 {
-    if (optimalQueueSize < currentRequestsNumberInMemory)
-        optimalQueueSize = currentRequestsNumberInMemory;
-    optimalQueueSize += dropRequestNumber;
-
-    double procUnitLoadKoff = !currentModelingTime ? 0.0 : (double) procUnitWorkingTime / currentModelingTime;
-    emit CollectStatisticsSignal(currentRequestsNumberInMemory, dropRequestNumber, optimalQueueSize, procUnitLoadKoff);
+    double requestDropKoff = requestDropNumber + requestProcessedNumber == 0 ?
+                0.0 : (double) requestDropNumber / (requestDropNumber + requestProcessedNumber);
+    emit CollectStatisticsSignal(requestDropKoff);
 }

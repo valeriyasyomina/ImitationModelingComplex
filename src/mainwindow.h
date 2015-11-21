@@ -22,8 +22,7 @@ private slots:
     void on_btnStartModeling_clicked();
 
 public slots:
-    void StatisticsCollected(int currentRequestsNumberInMemory, int dropRequestNumber,
-                             int optimalQueueSize, double procUnitLoadKoff);
+    void StatisticsCollected(double requestDropKoff);
     void ModelingFinished();
 private:
     Ui::MainWindow *ui;

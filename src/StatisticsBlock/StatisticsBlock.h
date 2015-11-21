@@ -6,17 +6,13 @@
 class StatisticsBlock : public QObject
 {
     Q_OBJECT
-private:
-    int optimalQueueSize;
 public:
-    StatisticsBlock() : optimalQueueSize(0) {}
+    StatisticsBlock() {}
     ~StatisticsBlock() {}
 
-    void CollectStatistics(int currentRequestsNumberInMemory, int dropRequestNumber, double currentModelingTime,
-                           double procUnitWorkingTime);
+    void CollectStatistics(int requestProcessedNumber, int requestDropNumber);
 signals:
-    void CollectStatisticsSignal(int currentRequestsNumberInMemory, int dropRequestNumber,
-                                 int optimalQueueSize, double procUnitLoadKoff);
+    void CollectStatisticsSignal(double requestDropKoff);
 };
 
 #endif // STATISTICSBLOCK_H

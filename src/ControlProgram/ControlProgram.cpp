@@ -3,66 +3,72 @@
 ControlProgram::ControlProgram()
 {
     informationSource = NULL;
-    processingUnit = NULL;
+
+    firstOperator = NULL;
+    secondOperator = NULL;
+    thirdOperator = NULL;
+
+    firstComputer = NULL;
+    secondComputer = NULL;
+
+    firstStorage = NULL;
+    secondStorage = NULL;
+
     statisticsBlock = NULL;
-    memory = NULL;
-    endModelingTime = 0.0;
+
     currentModelingTime = 0.0;
+
+    requestNumberToBeProcessed = 0;
     requestDropNumber = 0;
-    requestReturnNumber = 0;
-    requestCounter = 0;
+    requestProcessedNumber = 0;
+
     CleanTimeArray();
 }
 
 ControlProgram::~ControlProgram()
 {
-    if (informationSource)
-    {
-        delete informationSource;
-        informationSource = NULL;
-    }
-    if (processingUnit)
-    {
-        delete processingUnit;
-        processingUnit = NULL;
-    }
-    if (statisticsBlock)
-    {
-        delete statisticsBlock;
-        statisticsBlock = NULL;
-    }
-    if (memory)
-    {
-        delete memory;
-        memory = NULL;
-    }
+    FreeSystem();
 }
 
-void ControlProgram::ConfigureSystem(double endModelingTime, int maxMemorySize,
-                     double a, double b, double matExp, double sigma, double maxBorderForNormalGenerator,
-                     int requestDropPercent, int requestReturnPercent)
+void ControlProgram::ConfigureSystem(int maxMemorySize, double aFirstOperator,
+                                     double bFirstOperator, double aSecondOperator, double bSecondOperator,
+                                     double aThirdOperator, double bThirdOperator, double aInfSource, double bInfSouce,
+                                     int requestNumberToBeProcessed)
 {
     try
     {
-        if (endModelingTime <= 0 || maxMemorySize <= 0 || sigma < 0 || sigma == maxBorderForNormalGenerator ||
-                requestDropPercent < 0 || requestDropPercent > 100 || requestReturnPercent < 0 ||
-                requestReturnPercent > 100)
+        if (maxMemorySize <= 0)
             throw ErrorInputDataException("Error input parameters in ControlProgram::ConfigureSystem");
-        informationSource = new InformationSource(sigma, matExp, 0, maxBorderForNormalGenerator, 12);
-        processingUnit = new ProcessingUnit(a, b);
+
+        FreeSystem();
+
+        informationSource = new InformationSourceUniform(aInfSource, bInfSouce);
+
+        firstOperator = new Operator(aFirstOperator, bFirstOperator);
+        secondOperator = new Operator(aSecondOperator, bSecondOperator);
+        thirdOperator = new Operator(aThirdOperator, bThirdOperator);
+
         statisticsBlock = new StatisticsBlock();
-        memory = new Memory(maxMemorySize);
 
-        connect(statisticsBlock, SIGNAL(CollectStatisticsSignal(int,int,int,double)), this,
-                SLOT(StatisticsCollected(int,int,int,double)));
+        firstStorage = new Memory(maxMemorySize);
+        secondStorage = new Memory(maxMemorySize);
 
-        this->endModelingTime = endModelingTime;
+        firstComputer = new Computer(FIRST_COMPUTER_PROCESSING_TIME);
+        secondComputer = new Computer(SECOND_COMPUTER_PROCESSING_TIME);
 
-        timeArray[INFORMATION_SOURSE_INDEX] = informationSource->GenerateRequestTime();
-        timeArray[PROCESSING_UNIT_INDEX] = IDLE_TIME;
+        connect(statisticsBlock, SIGNAL(CollectStatisticsSignal(double)), this,
+                SLOT(StatisticsCollected(double)));
 
-        requestDropNumber = requestDropPercent / 100;
-        requestReturnNumber = requestReturnPercent / 100;
+        this->requestNumberToBeProcessed = requestNumberToBeProcessed;
+        requestProcessedNumber = 0;
+        requestDropNumber = 0;
+
+        timeArray[INFORMATION_SOURSE_INDEX] = informationSource->GetProcessTime();
+        timeArray[FIRST_OPERATOR_INDEX] = IDLE_TIME;
+        timeArray[SECOND_OPERATOR_INDEX] = IDLE_TIME;
+        timeArray[THIRD_OPERATOR_INDEX] = IDLE_TIME;
+        timeArray[FIRST_COMPUTER_INDEX] = IDLE_TIME;
+        timeArray[SECOND_COMPUTER_INDEX] = IDLE_TIME;
     }
     catch (std::bad_alloc& exception)
     {
@@ -72,14 +78,13 @@ void ControlProgram::ConfigureSystem(double endModelingTime, int maxMemorySize,
 
 void ControlProgram::StartModeling()
 {
-    for (currentModelingTime = 0.0; currentModelingTime <= endModelingTime; currentModelingTime)
+    while (requestProcessedNumber < requestNumberToBeProcessed)
     {
-        statisticsBlock->CollectStatistics(memory->Size(), memory->GetDropRequestNumber(), currentModelingTime,
-                                           processingUnit->GetWorkingTime());
         currentModelingTime = GetMinTime();
         RealizeEvents();
-    }
+    }  
     emit ModelingFinishedSignal();
+    statisticsBlock->CollectStatistics(requestProcessedNumber, requestDropNumber);
 }
 
 double ControlProgram::GetMinTime()
@@ -94,32 +99,79 @@ double ControlProgram::GetMinTime()
 }
 void ControlProgram::RealizeEvents()
 {
-    if (fabs(timeArray[PROCESSING_UNIT_INDEX] - currentModelingTime) < EPSILON &&
-            timeArray[PROCESSING_UNIT_INDEX] != IDLE_TIME)
-    {
-        timeArray[PROCESSING_UNIT_INDEX] = IDLE_TIME;
-        if (requestCounter < requestReturnNumber)
-        {
-            Request request(currentModelingTime);
-            memory->PutRequest(request);
-            requestCounter++;
-        }
-        else
-            requestCounter = 0;
-    }
     if (fabs(timeArray[INFORMATION_SOURSE_INDEX] - currentModelingTime) < EPSILON)
     {
-        Request request(currentModelingTime);
-        memory->PutRequest(request);
-        timeArray[INFORMATION_SOURSE_INDEX] = informationSource->GenerateRequestTime() + currentModelingTime;
+        if (!firstOperator->HasAssignedRequest())
+            firstOperator->SetRequestAssigned(true);
+        else if (!secondOperator->HasAssignedRequest())
+            secondOperator->SetRequestAssigned(true);
+        else if (!thirdOperator->HasAssignedRequest())
+            thirdOperator->SetRequestAssigned(true);
+        else
+            requestDropNumber++;
+
+        timeArray[INFORMATION_SOURSE_INDEX] = informationSource->GetProcessTime() + currentModelingTime;
     }
-    if ((int)timeArray[PROCESSING_UNIT_INDEX] == IDLE_TIME)
+
+    if (fabs(timeArray[FIRST_OPERATOR_INDEX] - currentModelingTime) < EPSILON &&
+                firstOperator->HasAssignedRequest())
     {
-        if (!memory->isEmpty())
-        {
-            Request request = memory->GetRequest();
-            timeArray[PROCESSING_UNIT_INDEX] = processingUnit->GetProcessTime() + currentModelingTime;
-        }
+        firstOperator->SetRequestAssigned(false);
+        Request request(currentModelingTime);
+        firstStorage->PutRequest(request);
+        timeArray[FIRST_OPERATOR_INDEX] = IDLE_TIME;
+    }
+    if (fabs(timeArray[SECOND_OPERATOR_INDEX] - currentModelingTime) < EPSILON &&
+                secondOperator->HasAssignedRequest())
+    {
+        secondOperator->SetRequestAssigned(false);
+        Request request(currentModelingTime);
+        firstStorage->PutRequest(request);
+        timeArray[SECOND_OPERATOR_INDEX] = IDLE_TIME;
+    }
+    if (fabs(timeArray[THIRD_OPERATOR_INDEX] - currentModelingTime) < EPSILON &&
+                thirdOperator->HasAssignedRequest())
+    {
+        thirdOperator->SetRequestAssigned(false);
+        Request request(currentModelingTime);
+        secondStorage->PutRequest(request);
+        timeArray[THIRD_OPERATOR_INDEX] = IDLE_TIME;
+    }
+
+    if (firstOperator->HasAssignedRequest() && fabs(timeArray[FIRST_OPERATOR_INDEX] - IDLE_TIME) < EPSILON)
+        timeArray[FIRST_OPERATOR_INDEX] = firstOperator->GetProcessTime() + currentModelingTime;
+    if (secondOperator->HasAssignedRequest() && fabs(timeArray[SECOND_OPERATOR_INDEX] - IDLE_TIME) < EPSILON)
+        timeArray[SECOND_OPERATOR_INDEX] = secondOperator->GetProcessTime() + currentModelingTime;
+    if (thirdOperator->HasAssignedRequest() && fabs(timeArray[THIRD_OPERATOR_INDEX] - IDLE_TIME) < EPSILON)
+        timeArray[THIRD_OPERATOR_INDEX] = thirdOperator->GetProcessTime() + currentModelingTime;
+
+    if (fabs(timeArray[FIRST_COMPUTER_INDEX] - currentModelingTime) < EPSILON &&
+                firstComputer->HasAssignedRequest())
+    {
+        firstComputer->SetRequestAssigned(false);
+        requestProcessedNumber++;
+        timeArray[FIRST_COMPUTER_INDEX] = IDLE_TIME;
+    }
+    if (fabs(timeArray[SECOND_COMPUTER_INDEX] - currentModelingTime) < EPSILON &&
+                secondComputer->HasAssignedRequest())
+    {
+        secondComputer->SetRequestAssigned(false);
+        requestProcessedNumber++;
+        timeArray[SECOND_COMPUTER_INDEX] = IDLE_TIME;
+    }
+
+    if (!firstStorage->isEmpty() && fabs(timeArray[FIRST_COMPUTER_INDEX] - IDLE_TIME) < EPSILON)
+    {
+        Request request = firstStorage->GetRequest();
+        firstComputer->SetRequestAssigned(true);
+        timeArray[FIRST_COMPUTER_INDEX] = firstComputer->GetProcessTime() + currentModelingTime;
+    }
+
+    if (!secondStorage->isEmpty() && fabs(timeArray[SECOND_COMPUTER_INDEX] - IDLE_TIME) < EPSILON)
+    {
+         Request request = secondStorage->GetRequest();
+         secondComputer->SetRequestAssigned(true);
+         timeArray[SECOND_COMPUTER_INDEX] = secondComputer->GetProcessTime() + currentModelingTime;
     }
 }
 
@@ -129,8 +181,61 @@ void ControlProgram::CleanTimeArray()
         timeArray[i] = 0.0;
 }
 
-void ControlProgram::StatisticsCollected(int currentRequestsNumberInMemory, int dropRequestNumber,
-                                         int optimalQueueSize, double procUnitLoadKoff)
+void ControlProgram::FreeSystem()
 {
-    emit StatisticsCollectedSignal(currentRequestsNumberInMemory, dropRequestNumber, optimalQueueSize, procUnitLoadKoff);
+    if (informationSource)
+    {
+        delete informationSource;
+        informationSource = NULL;
+    }
+
+    if (firstOperator)
+    {
+        delete firstOperator;
+        firstOperator = NULL;
+    }
+    if (secondOperator)
+    {
+        delete secondOperator;
+        secondOperator = NULL;
+    }
+    if (thirdOperator)
+    {
+        delete thirdOperator;
+        thirdOperator = NULL;
+    }
+
+    if (firstComputer)
+    {
+        delete firstComputer;
+        firstComputer = NULL;
+    }
+    if (secondComputer)
+    {
+        delete secondComputer;
+        secondComputer = NULL;
+    }
+
+    if (firstStorage)
+    {
+        delete firstStorage;
+        firstStorage = NULL;
+    }
+    if (secondStorage)
+    {
+        delete secondStorage;
+        secondStorage = NULL;
+    }
+
+    if (statisticsBlock)
+    {
+        delete statisticsBlock;
+        statisticsBlock = NULL;
+    }
 }
+
+void ControlProgram::StatisticsCollected(double requestDropKoff)
+{
+    emit StatisticsCollectedSignal(requestDropKoff);
+}
+

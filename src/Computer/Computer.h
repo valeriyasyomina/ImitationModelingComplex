@@ -10,7 +10,6 @@ protected:
 public:
     Computer(): ProcessingUnit() {}
     Computer(double time) : ProcessingUnit(), processTime(time) {}
-    Computer(double a, double b) : ProcessingUnit(a, b) {}
     ~Computer() {}
 
     double GetProcessTime() {return processTime;}

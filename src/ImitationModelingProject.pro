@@ -40,6 +40,7 @@ HEADERS  += mainwindow.h \
     Exception/QueueFullException.h \
     Exception/QueueEmptyException.h \
     Computer/Computer.h \
-    Operator/Operator.h
+    Operator/Operator.h \
+    InformationSource/InformationSourceUniform.h
 
 FORMS    += mainwindow.ui

@@ -1,6 +1,7 @@
 #ifndef PROCESSINGUNIT_H
 #define PROCESSINGUNIT_H
 
+#include <QDateTime>
 #include "../Generator/LKG.h"
 
 class ProcessingUnit
@@ -10,18 +11,23 @@ protected:
     double b;
     double previousTime;
     double workingTime;
+    bool requestWasAssigned;
 public:
-    ProcessingUnit(): a(0.0), b(0.0), previousTime(0.0), workingTime(0.0) {}
+    ProcessingUnit(): a(0.0), b(0.0), previousTime(QDateTime::currentMSecsSinceEpoch()),
+        workingTime(0.0), requestWasAssigned(false) {}
     ProcessingUnit(double a, double b)
     {
         this->a = a;
         this->b = b;
-        previousTime = 0.0;
+        previousTime = QDateTime::currentMSecsSinceEpoch();
         workingTime = 0.0;
+        requestWasAssigned = false;
     }
-    ~ProcessingUnit() {}
+    virtual ~ProcessingUnit() {}
 
-    double GetProcessTime();
+    virtual double GetProcessTime();
+    virtual bool HasAssignedRequest() const {return requestWasAssigned;}
+    virtual void SetRequestAssigned(bool requestAssigned) {requestWasAssigned = requestAssigned;}
     double GetWorkingTime() const {return workingTime;}
 };
 

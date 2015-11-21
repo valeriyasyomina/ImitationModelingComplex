@@ -6,32 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>979</width>
-    <height>499</height>
+    <width>779</width>
+    <height>407</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLineEdit" name="edtModelingTime">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>30</y>
-      <width>113</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>100</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="edtMaxMemorySize">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>60</y>
+      <y>17</y>
       <width>113</width>
       <height>27</height>
      </rect>
@@ -40,89 +27,63 @@
      <string>100</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="edtA">
+   <widget class="QLineEdit" name="edtAFirstOperator">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>90</y>
+      <y>47</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>3</string>
+     <string>15</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="edtB">
+   <widget class="QLineEdit" name="edtBFirstOperator">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>120</y>
+      <y>77</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>5</string>
+     <string>25</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="edtMatExp">
+   <widget class="QLineEdit" name="edtAInfSource">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>150</y>
+      <y>227</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>2</string>
+     <string>8</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="edtSigma">
+   <widget class="QLineEdit" name="edtBInfSource">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>180</y>
+      <y>257</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>9</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="edtMaxBorder">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>210</y>
-      <width>113</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>10</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>30</y>
-      <width>171</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Время моделирования</string>
+     <string>12</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>154</x>
-      <y>60</y>
+      <x>161</x>
+      <y>23</y>
       <width>221</width>
       <height>17</height>
      </rect>
@@ -134,73 +95,60 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>362</x>
-      <y>90</y>
-      <width>16</width>
-      <height>17</height>
+      <x>234</x>
+      <y>50</y>
+      <width>150</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>А</string>
+     <string>А (первый оператор)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>362</x>
-      <y>120</y>
-      <width>16</width>
+      <x>235</x>
+      <y>81</y>
+      <width>150</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>B</string>
+     <string>B (первый оператор)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>173</x>
-      <y>154</y>
-      <width>201</width>
-      <height>16</height>
+      <x>200</x>
+      <y>232</y>
+      <width>191</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Математическое ожидание</string>
+     <string>A (источник информации)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>113</x>
-      <y>181</y>
-      <width>261</width>
-      <height>17</height>
+      <x>200</x>
+      <y>260</y>
+      <width>191</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Среднеквадратическое отклонение</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>8</x>
-      <y>212</y>
-      <width>371</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Верхняя граница для нормального распределения</string>
+     <string>В (источник информации)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnStartModeling">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>410</y>
+      <y>320</y>
       <width>241</width>
       <height>27</height>
      </rect>
@@ -209,79 +157,147 @@
      <string>Начать процесс моделирования</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="lwStatistics">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>30</y>
-      <width>441</width>
-      <height>401</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="edtRequestDropPercent">
+   <widget class="QLineEdit" name="edtRequestToBeProcessed">
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>240</y>
+      <y>287</y>
       <width>113</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>100</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="edtRequestReturnPercent">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>270</y>
-      <width>113</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>0</string>
+     <string>300</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>240</y>
-      <width>181</width>
+      <x>240</x>
+      <y>112</y>
+      <width>151</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Процент заявок на выход</string>
+     <string>А (второй оператор)</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>79</x>
-      <y>271</y>
-      <width>301</width>
-      <height>17</height>
+      <x>240</x>
+      <y>141</y>
+      <width>150</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Процент заявок на повторную обработку</string>
+     <string>В (второй оператор)</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_10">
+   <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>10</y>
-      <width>171</width>
+      <x>242</x>
+      <y>202</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>В (третий оператор)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>243</x>
+      <y>170</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>А (третий оператор)</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="edtASecondOperator">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>107</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>30</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="edtBSecondOperator">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>137</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>50</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="edtAThirdOperator">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>167</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>20</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="edtBThirdOperator">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>197</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>60</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>290</y>
+      <width>201</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Статистика</string>
+     <string>Число обработанных заявок</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblRequestDropKoff">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>20</y>
+      <width>261</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Коэффициент потерь</string>
     </property>
    </widget>
   </widget>
@@ -290,7 +306,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>979</width>
+     <width>779</width>
      <height>25</height>
     </rect>
    </property>

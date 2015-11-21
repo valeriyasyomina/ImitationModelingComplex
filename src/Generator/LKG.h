@@ -8,11 +8,11 @@ protected:
     static int b;
     static int m;
 public:
-    static int GenerateValue(int previousValue, int lowBorder, int highBorder);
-    static int GenerateValue(int previousValue);
+    static double GenerateValue(double previousValue, int lowBorder, int highBorder);
+    static double GenerateValue(double previousValue);
+    static double TransformValueIntoBorders(double value, int lowBorder, int highBorder);
 protected:
-    static int Generator(int previousValue);
-    static int TransformValueIntoBorders(int value, int lowBorder, int highBorder);
+    static double Generator(double previousValue);
 };
 
 #endif // LKG_H
